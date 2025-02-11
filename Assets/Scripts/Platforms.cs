@@ -4,20 +4,14 @@ using UnityEngine;
 
 public class Platforms : MonoBehaviour
 {
-    private BoxCollider2D bc;
     public CompositeCollider2D cc;
-    private bool IsTrigger;
+    //private bool IsTrigger;
 
-
-    private void Awake()
-    {
-        bc = GetComponent<BoxCollider2D>();
-    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")
         {
-            IsTrigger = true;
+        //    IsTrigger = true;
             cc.isTrigger = true;
         }
     }
@@ -25,7 +19,7 @@ public class Platforms : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            IsTrigger = false;
+        //    IsTrigger = false;
             cc.isTrigger = false;
         }
     }

@@ -32,7 +32,6 @@ public class SpellCast : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             PubSub.Publish(new SpikeCollEvent() { Damage = damage });
-
         }
     }
 }

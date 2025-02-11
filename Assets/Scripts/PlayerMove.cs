@@ -124,11 +124,11 @@ public class PlayerMove : MonoBehaviour
          //   isAnimActive = false;
         }
     }
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        jumping = true;
-     //   StartCoroutine(JumpingCD());
-    }
+    //private void OnCollisionExit2D(Collision2D collision)
+    //{
+    //    jumping = true;
+    // //   StartCoroutine(JumpingCD());
+    //}
     public void ChangeAnimation(string anim, float crossFade = 0.1f)
     {
         if (anim != currentAnim)

@@ -1,5 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Threading;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class BossMovement : MonoBehaviour
@@ -19,8 +22,13 @@ public class BossMovement : MonoBehaviour
     [SerializeField] private GameObject BossRay;
     [SerializeField] private PlayerInZone PlayerInZone;
     [SerializeField] private PlayerInMeleeZone PlayerInMeleeZone;
+    [SerializeField] private GameObject Player;
+    [SerializeField] private int damage;
     private bool isPlayerInZone;
     private bool isPlayerInMeleeZone;
+    private bool isPlayerBehindBoss;
+
+
 
     void Start()
     {
@@ -58,13 +66,18 @@ public class BossMovement : MonoBehaviour
             StartCoroutine(WalkTimer());
         }
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         otherGameObject = collision.gameObject;
         if (otherGameObject.tag == "Enemy_border")
         {
             isEdgeReachedLeft = !isEdgeReachedLeft;
             isEdgeReachedRight = !isEdgeReachedRight;
+            BossFlip();
+        }
+    }
+    private void BossFlip()
+    {
             if (sr.flipX)
             {
                 tr.position += new Vector3(-9.65f, 0, 0);
@@ -76,6 +89,13 @@ public class BossMovement : MonoBehaviour
                 cc.offset *= new Vector2(-1f, 1);
             }
             sr.flipX = !sr.flipX;
+    }
+    private void BossFlipAnim()
+    {
+        if (isPlayerBehindBoss)
+        {
+            BossFlip();
+            isPlayerBehindBoss = false;
         }
     }
     public void OnDeath()
@@ -91,6 +111,13 @@ public class BossMovement : MonoBehaviour
         BossRay.SetActive(true);
         BossRay.transform.position = new Vector2(PlayerInZone.CheckPosition().x, BossRay.transform.position.y);
     }
+    public void MeleeCast()
+    {
+        if (isPlayerInMeleeZone)
+        {
+            PubSub.Publish(new SpikeCollEvent() { Damage = damage });
+        }
+    }
 
     IEnumerator WalkTimer()
     {
@@ -103,8 +130,10 @@ public class BossMovement : MonoBehaviour
         isPlayerInZone = PlayerInZone.CheckPlayerInZone();
         isPlayerInMeleeZone = PlayerInMeleeZone.CheckPlayerInMeleeZone();
         isWalked = false;
-        RangeAttack();
-        // MeleeAttack();
+        Attack();
+        //MeleeAttack();
+        //isWalked = false;
+        //RangeAttack();
         Debug.Log(isWalked);
         isCoroutineStarted = false;
     }
@@ -124,17 +153,39 @@ public class BossMovement : MonoBehaviour
     }
     private void MeleeAttack()
     {
-        //isWalked = false;
         if (isPlayerInMeleeZone)
         {
             if (isLive)
             {
-                animator.Play("Attack");
+                if ((PlayerInMeleeZone.CheckPosition().x + 4.65f < transform.position.x && sr.flipX == true) 
+                    || (PlayerInMeleeZone.CheckPosition().x - 4.65f > transform.position.x && sr.flipX == false))
+                {
+                    isPlayerBehindBoss = true;
+                    BossFlip();
+                    animator.Play("Attack");
+                }
+                else
+                {
+                    animator.Play("Attack");
+                }
             }
         }
         else
         {
             isWalked = true;
+        }
+    }
+    private void Attack() 
+    {
+        if (isPlayerInMeleeZone)
+        {
+            MeleeAttack();
+            return;
+        }
+        else
+        {
+            RangeAttack();
+            return;
         }
     }
 }

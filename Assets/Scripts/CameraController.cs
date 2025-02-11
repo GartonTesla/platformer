@@ -1,31 +1,30 @@
+using Cinemachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] private Transform _player;
-    [SerializeField] private float _aHeadDis;
-    [SerializeField] private float _cameraSpeed;
-    /*[SerializeField]*/ private float _lookAhead = 0;
-    private float lastLookAhead;
-
-    void Update()
+    private CinemachineVirtualCamera _camera;
+    [SerializeField] private Transform player;
+    private void Awake()
     {
-        transform.position = new Vector3(_player.position.x + _lookAhead, _player.position.y, transform.position.z);
-        if (_lookAhead <= 5f && _lookAhead >= -5f)
+        _camera = GetComponent<CinemachineVirtualCamera>();
+        PubSub.RegisterListener<FixCameraBossEvent>(ChangeCameraFollow);
+    }
+
+    private void ChangeCameraFollow(object publishedEvent)
+    {
+        FixCameraBossEvent e = publishedEvent as FixCameraBossEvent;
+        if (e.IsPlayerInArea)
         {
-            _lookAhead = Mathf.Lerp(_lookAhead, (_aHeadDis * _player.localPosition.x), Time.deltaTime * _cameraSpeed);
- //           _lookAhead = Mathf.RoundToInt(_lookAhead);
- //           lastLookAhead = _lookAhead;
+            _camera.Follow = e.FixCameraPos;
         }
- //       else if (_lookAhead >5f)
- //       {
- //           _lookAhead = 5f;
- //       }
- //       else
- //       {
- //           _lookAhead = -5f;
- //       }
+        else
+        {
+            _camera.Follow = player;
+        }
     }
 }
