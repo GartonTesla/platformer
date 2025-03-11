@@ -34,6 +34,12 @@ public class ProjectileDamage : MonoBehaviour
             bC.enabled = false;
             collision.gameObject.GetComponent<BossStats>().TakeDamage(damage);
         }
+        if (collision.gameObject.tag == "Ground")
+        {
+            animator.Play("ProjectileDeath");
+            rb.constraints = RigidbodyConstraints2D.FreezePosition;
+            bC.enabled = false;
+        }
     }
     public void ProjDeath()
     {

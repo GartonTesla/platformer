@@ -26,7 +26,7 @@ public class PlayerInZone : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             playerInZone = true;
-            PubSub.Publish(new FixCameraBossEvent() { IsPlayerInArea = playerInZone, FixCameraPos = FixCameraPos });
+            PubSub.Publish(new FixCameraEvent() { IsPlayerInArea = playerInZone, FixCameraPos = FixCameraPos });
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
@@ -34,7 +34,7 @@ public class PlayerInZone : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             playerInZone = false;
-            PubSub.Publish(new FixCameraBossEvent() { IsPlayerInArea = playerInZone });
+            PubSub.Publish(new FixCameraEvent() { IsPlayerInArea = playerInZone });
         }
     }
 

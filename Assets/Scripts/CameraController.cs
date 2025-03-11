@@ -12,12 +12,12 @@ public class CameraController : MonoBehaviour
     private void Awake()
     {
         _camera = GetComponent<CinemachineVirtualCamera>();
-        PubSub.RegisterListener<FixCameraBossEvent>(ChangeCameraFollow);
+        PubSub.RegisterListener<FixCameraEvent>(ChangeCameraFollow);
     }
 
     private void ChangeCameraFollow(object publishedEvent)
     {
-        FixCameraBossEvent e = publishedEvent as FixCameraBossEvent;
+        FixCameraEvent e = publishedEvent as FixCameraEvent;
         if (e.IsPlayerInArea)
         {
             _camera.Follow = e.FixCameraPos;

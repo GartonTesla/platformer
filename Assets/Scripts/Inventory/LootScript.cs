@@ -20,7 +20,7 @@ public class LootScript : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             Debug.Log("playerfound");
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKey("e"))
             {
                 Debug.Log("buttnpressed");
                 foreach (GameObject go in storedItems)
