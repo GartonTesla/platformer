@@ -100,6 +100,7 @@ public class BossMovement : MonoBehaviour
     }
     public void OnDeath()
     {
+        PubSub.Publish(new AfterFirstBossEvent() { });
         isLive = false;
     }
     public void OnCast()
